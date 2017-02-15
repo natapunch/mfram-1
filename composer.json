@@ -1,0 +1,13 @@
+{
+    "name": "mindk/framework",
+    "description": "Sample FW",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ddavidov",
+            "email": "ddavidov@mindk.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
