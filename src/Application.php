@@ -1,14 +1,11 @@
 <?php
+
+namespace Mindk\Framework;
+
 /**
- * Created by PhpStorm.
- * User: dimmask
- * Date: 15.02.17
- * Time: 19:43
+ * Class Application
+ * @package Mindk\Framework
  */
-
-namespace Midk\Framework;
-
-
 class Application
 {
 
