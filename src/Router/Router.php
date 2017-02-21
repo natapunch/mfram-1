@@ -4,12 +4,21 @@ namespace Mindk\Framework\Router;
 
 use Mindk\Framework\Request\Request;
 
+/**
+ * Class Router
+ * Routing processing class
+ *
+ * @package Mindk\Framework\Router
+ */
 class Router
 {
 
     const DEFAULT_VAR_REGEXP = "[^\/]+";
-    private $routes = [];
 
+    /**
+     * @var array   Routing map
+     */
+    private $routes = [];
 
     /**
      * Router constructor.
@@ -33,12 +42,17 @@ class Router
 
     }
 
-    public function getRoute(Request $request): RouteResult
+    /**
+     * Get current route object
+     *
+     * @param Request $request
+     * @return Route
+     */
+    public function getRoute(Request $request): Route
     {
         // todo check uri by regexp and method
         // todo if variables - get
         // todo make RouteResult and return
-
     }
 
     /**

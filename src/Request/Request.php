@@ -2,6 +2,12 @@
 
 namespace Mindk\Framework\Request;
 
+/**
+ * Class Request
+ * Request processing class
+ *
+ * @package Mindk\Framework
+ */
 class Request
 {
     private static $request = null;
@@ -27,13 +33,21 @@ class Request
         return self::$request;
     }
 
-    public function getUri():string
+    /**
+     * Get current URI
+     *
+     * @return string
+     */
+    public function getUri(): string
     {
-//        debug($_SERVER);
-
         return $_SERVER["REQUEST_URI"];
     }
 
+    /**
+     * Get current request method
+     *
+     * @return string
+     */
     public function getMethod(): string
     {
         return $_SERVER["REQUEST_METHOD"];

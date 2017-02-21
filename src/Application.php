@@ -1,27 +1,39 @@
 <?php
 
 namespace Mindk\Framework;
+
 use Mindk\Framework\Request\Request;
 use Mindk\Framework\Router\Router;
 
 /**
  * Class Application
+ * Mindk Framework application instance class
+ *
  * @package Mindk\Framework
  */
 class Application
 {
-    public function start()
+    /**
+     * Application initialization
+     */
+    public function init()
     {
-        $request = Request::getRequest();
-
-//        debug($request->getUri());
-//        debug($request->getMethod());
-//        debug($_GET);
-
-        $router = new Router(require __DIR__ . "/../config/routes.php");
-
-
-
+        //@TODO: Do some app initializations
     }
 
+    /**
+     * Process the request
+     */
+    public function run()
+    {
+        //@TODO: Run that stuff
+    }
+
+    /**
+     * Application run postflight
+     */
+    public function done()
+    {
+        //@TODO: Close active connections, etc.
+    }
 }
