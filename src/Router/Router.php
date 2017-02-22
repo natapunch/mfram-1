@@ -38,7 +38,7 @@ class Router
             ];
         }
 
-        debug($this->routes);
+        //debug($this->routes);
 
     }
 
