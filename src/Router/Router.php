@@ -50,9 +50,21 @@ class Router
      */
     public function getRoute(Request $request): Route
     {
-        // todo check uri by regexp and method
-        // todo if variables - get
-        // todo make RouteResult and return
+        $uri = $request->getUri();
+
+        foreach($this->routes as $name => $route){
+            if(preg_match('/'.$route['regexp'].'/', $uri) && ($route['method'] == $request->getMethod())){
+                $result = new Route();
+                $result->name = $name;
+                $result->controller = $route['controller_name'];
+                $result->method = $route['controller_method'];
+                // ...
+
+                return $result;
+            }
+        }
+
+        throw new \Exception('Route not found');
     }
 
     /**

@@ -31,8 +31,12 @@ class Application
      */
     public function run()
     {
+        $router = new Router($this->config['routes']);
+        $request = Request::getRequest();
+        $route = $router->getRoute($request);
+
         echo "<pre>";
-        print_r($this->config);
+        print_r($route);
         echo "</pre>";
     }
 
@@ -41,6 +45,6 @@ class Application
      */
     public function __destruct()
     {
-        echo 'Done!';
+        //@TODO: Close all...
     }
 }
