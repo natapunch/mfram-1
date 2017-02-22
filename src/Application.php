@@ -14,11 +14,16 @@ use Mindk\Framework\Router\Router;
 class Application
 {
     /**
+     * @var array App config
+     */
+    public $config = [];
+
+    /**
      * Application initialization
      */
-    public function init()
+    public function __construct($config = [])
     {
-        //@TODO: Do some app initializations
+        $this->config = $config;
     }
 
     /**
@@ -26,14 +31,16 @@ class Application
      */
     public function run()
     {
-        //@TODO: Run that stuff
+        echo "<pre>";
+        print_r($this->config);
+        echo "</pre>";
     }
 
     /**
      * Application run postflight
      */
-    public function done()
+    public function __destruct()
     {
-        //@TODO: Close active connections, etc.
+        echo 'Done!';
     }
 }
