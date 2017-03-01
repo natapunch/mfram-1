@@ -37,9 +37,6 @@ class Router
                 "variables" => $existed_variables
             ];
         }
-
-        //debug($this->routes);
-
     }
 
     /**
@@ -53,12 +50,16 @@ class Router
         $uri = $request->getUri();
 
         foreach($this->routes as $name => $route){
-            if(preg_match('/'.$route['regexp'].'/', $uri) && ($route['method'] == $request->getMethod())){
+            if(preg_match_all('/'.$route['regexp'].'/', $uri, $matches) && ($route['method'] == $request->getMethod())){
                 $result = new Route();
                 $result->name = $name;
                 $result->controller = $route['controller_name'];
                 $result->method = $route['controller_method'];
-                // ...
+
+                if(!empty($route['variables'])){
+                    array_shift($matches);
+                    $result->params = $this->parseParamValues($route['variables'], $matches);
+                }
 
                 return $result;
             }
@@ -132,5 +133,22 @@ class Router
         return array_map(function ($value) {
             return substr($value, 1, strlen($value) - 2);
         }, $variables[0]);
+    }
+
+    /**
+     * Bind param values to assoc array
+     *
+     * @param $variables
+     * @param $values
+     *
+     * @return array
+     */
+    private function parseParamValues($variables, $values)
+    {
+        $buffer = array_map(function($item){
+            return is_array($item) ? array_shift($item) : $item;
+        }, $values);
+
+        return array_combine($variables, $buffer);
     }
 }

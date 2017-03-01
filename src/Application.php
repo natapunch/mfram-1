@@ -35,9 +35,6 @@ class Application
         $request = Request::getRequest();
         $route = $router->getRoute($request);
 
-        echo "<pre>";
-        print_r($route);
-        echo "</pre>";
     }
 
     /**
