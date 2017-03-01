@@ -30,6 +30,7 @@ class Router
             $existed_variables = $this->getExistedVariables($value);
 
             $this->routes[$key] = [
+                "origin" => $value["pattern"],
                 "regexp" => $this->getRegexpFromRoute($value, $existed_variables),
                 "method" => isset($value["method"]) ? $value["method"] : "GET",
                 "controller_name" => $this->getControllerName($value),
@@ -150,5 +151,17 @@ class Router
         }, $values);
 
         return array_combine($variables, $buffer);
+    }
+
+    /**
+     * Build link
+     *
+     * @param $route_name
+     * @param array $params
+     */
+    public function getLink($route_name, $params = []){
+        $pattern = $this->routes[$route_name]['origin'];
+
+        return $pattern;
     }
 }

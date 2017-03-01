@@ -4,6 +4,7 @@ namespace Mindk\Framework;
 
 use Mindk\Framework\Request\Request;
 use Mindk\Framework\Router\Router;
+use Mindk\Framework\Response\Response;
 
 /**
  * Class Application
@@ -33,7 +34,28 @@ class Application
     {
         $router = new Router($this->config['routes']);
         $request = Request::getRequest();
-        $route = $router->getRoute($request);
+
+        try {
+            $route = $router->getRoute($request);
+
+            if(class_exists($route->controller)){
+                $reflectionClass = new \ReflectionClass($route->controller);
+                if($reflectionClass->hasMethod($route->method)){
+                    $controller = $reflectionClass->newInstance();
+                    $reflectionMethod = $reflectionClass->getMethod($route->method);
+
+                    $response = $reflectionMethod->invokeArgs($controller, $route->params);
+
+                    if($response instanceof Response){
+                        $response->send();
+                    }
+                }
+            }
+            //$link = $router->getLink('single_product', ['id' => 12, 'name'=>'color']);
+        } catch(\Exception $e) {
+            //@TODO:
+            echo "Smth went wrong...";
+        }
 
     }
 
