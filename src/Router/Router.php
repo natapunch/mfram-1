@@ -158,10 +158,22 @@ class Router
      *
      * @param $route_name
      * @param array $params
+     *
+     * @return string
      */
-    public function getLink($route_name, $params = []){
-        $pattern = $this->routes[$route_name]['origin'];
+    public function getLink($route_name, $params = []): string
+    {
+        $link = $this->routes[$route_name]['origin'];
 
-        return $pattern;
+        $replacements = '/\{[\w\d_]+\}/';
+        if(!empty($params) && preg_match($replacements, $link)){
+            foreach ($params as $key => $value){
+                $link = str_replace('{' . $key . '}', $value, $link);
+            }
+        }
+        // cleanup:
+        $link = preg_replace($replacements, '', $link);
+
+        return $link;
     }
 }

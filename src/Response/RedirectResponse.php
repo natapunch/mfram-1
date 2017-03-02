@@ -1,13 +1,28 @@
 <?php
 
-namespace \Mindk\Framework\Response;
+namespace Mindk\Framework\Response;
 
 /**
- * Created by PhpStorm.
- * User: dimmask
- * Date: 01.03.17
- * Time: 20:38
+ * Class RedirectResponse
  */
 class RedirectResponse extends Response{
 
+    /**
+     * RedirectResponse constructor.
+     *
+     * @param $redirect_uri
+     * @param int $code
+     */
+    public function __construct($redirect_uri, $code = 301)
+    {
+        $this->code = $code;
+        $this->addHeader('Location', $redirect_uri);
+    }
+
+    /**
+     * Send body override
+     */
+    public function sendBody(){
+        // Do nothing;
+    }
 }

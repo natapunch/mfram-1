@@ -51,7 +51,6 @@ class Application
                     }
                 }
             }
-            //$link = $router->getLink('single_product', ['id' => 12, 'name'=>'color']);
         } catch(\Exception $e) {
             //@TODO:
             echo "Smth went wrong...";

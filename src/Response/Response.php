@@ -8,10 +8,20 @@ namespace Mindk\Framework\Response;
  */
 class Response
 {
+    /**
+     * @var int Response code
+     */
     public $code = 200;
 
+    /**
+     * HTTP Status messages
+     */
     const STATUS_MSGS = [
         '200' => 'Ok',
+        '301' => 'Moved permanently',
+        '302' => 'Moved temporary',
+        '401' => 'Auth required',
+        '403' => 'Access denied',
         '404' => 'Not found',
         '500' => 'Server error'
     ];
@@ -24,19 +34,21 @@ class Response
     /**
      * @var string
      */
-    protected $body = '';
+    protected $playload = '';
 
     /**
      * Response constructor.
      */
     public function __construct($content, $code = 200)
     {
-        $this->setContent($content);
+        $this->setPlayload($content);
         $this->code = $code;
         $this->addHeader('Content-Type','text/html');
     }
 
     /**
+     * Add header
+     *
      * @param $key
      * @param $value
      */
@@ -47,19 +59,25 @@ class Response
     /**
      * @param $content
      */
-    public function setContent($content){
-        $this->body = $content;
+    public function setPlayload($content){
+        $this->playload = $content;
     }
 
     /**
      * Send response
      */
     public function send(){
+
         $this->sendHeaders();
-        $this->sendContent();
+        $this->sendBody();
+        exit();
     }
 
+    /**
+     * Send headers
+     */
     public function sendHeaders(){
+
         header($_SERVER['SERVER_PROTOCOL'] . " " . $this->code . " " . self::STATUS_MSGS[$this->code]);
         if(!empty($this->headers)){
            foreach($this->headers as $key => $value){
@@ -68,7 +86,10 @@ class Response
        }
     }
 
-    public function sendContent(){
-        echo "Hi!";
+    /**
+     * Send response playload
+     */
+    public function sendBody(){
+        echo $this->playload;
     }
 }
