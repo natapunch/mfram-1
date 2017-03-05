@@ -3,6 +3,7 @@
 namespace Mindk\Framework\Router;
 
 use Mindk\Framework\Request\Request;
+use Mindk\Framework\Router\Exception\RouteNotFoundException;
 
 /**
  * Class Router
@@ -45,28 +46,26 @@ class Router
      *
      * @param Request $request
      * @return Route
+     * @throws RouteNotFoundException
      */
     public function getRoute(Request $request): Route
     {
         $uri = $request->getUri();
 
-        foreach($this->routes as $name => $route){
-            if(preg_match_all('/'.$route['regexp'].'/', $uri, $matches) && ($route['method'] == $request->getMethod())){
-                $result = new Route();
-                $result->name = $name;
-                $result->controller = $route['controller_name'];
-                $result->method = $route['controller_method'];
+        foreach ($this->routes as $name => $route) {
+            if (preg_match_all($route['regexp'], $uri, $matches) && ($route['method'] == $request->getMethod())) {
+                $result = new Route($name, $route['controller_name'], $route['controller_method']);
 
-                if(!empty($route['variables'])){
+                if (!empty($route['variables'])) {
                     array_shift($matches);
-                    $result->params = $this->parseParamValues($route['variables'], $matches);
+                    $result->setParams($this->parseParamValues($route['variables'], $matches));
                 }
 
                 return $result;
             }
         }
 
-        throw new \Exception('Route not found');
+        throw new RouteNotFoundException('Route not found');
     }
 
     /**
@@ -117,7 +116,7 @@ class Router
 
         }
 
-        return "^" . $result . "$";
+        return "/^" . $result . "$/";
     }
 
 
@@ -146,7 +145,7 @@ class Router
      */
     private function parseParamValues($variables, $values)
     {
-        $buffer = array_map(function($item){
+        $buffer = array_map(function ($item) {
             return is_array($item) ? array_shift($item) : $item;
         }, $values);
 
@@ -166,8 +165,8 @@ class Router
         $link = $this->routes[$route_name]['origin'];
 
         $replacements = '/\{[\w\d_]+\}/';
-        if(!empty($params) && preg_match($replacements, $link)){
-            foreach ($params as $key => $value){
+        if (!empty($params) && preg_match($replacements, $link)) {
+            foreach ($params as $key => $value) {
                 $link = str_replace('{' . $key . '}', $value, $link);
             }
         }

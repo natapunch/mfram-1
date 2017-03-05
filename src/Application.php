@@ -3,6 +3,7 @@
 namespace Mindk\Framework;
 
 use Mindk\Framework\Request\Request;
+use Mindk\Framework\Router\Exception\RouteNotFoundException;
 use Mindk\Framework\Router\Router;
 use Mindk\Framework\Response\Response;
 
@@ -21,6 +22,7 @@ class Application
 
     /**
      * Application initialization
+     * @param array $config
      */
     public function __construct($config = [])
     {
@@ -38,20 +40,24 @@ class Application
         try {
             $route = $router->getRoute($request);
 
-            if(class_exists($route->controller)){
-                $reflectionClass = new \ReflectionClass($route->controller);
-                if($reflectionClass->hasMethod($route->method)){
+            $route_controller = $route->getController();
+            $route_method = $route->getMethod();
+            if (class_exists($route_controller)) {
+                $reflectionClass = new \ReflectionClass($route_controller);
+                if ($reflectionClass->hasMethod($route_method)) {
                     $controller = $reflectionClass->newInstance();
-                    $reflectionMethod = $reflectionClass->getMethod($route->method);
+                    $reflectionMethod = $reflectionClass->getMethod($route_method);
+                    $response = $reflectionMethod->invokeArgs($controller, $route->getParams());
 
-                    $response = $reflectionMethod->invokeArgs($controller, $route->params);
-
-                    if($response instanceof Response){
+                    if ($response instanceof Response) {
                         $response->send();
                     }
                 }
             }
-        } catch(\Exception $e) {
+        } catch (RouteNotFoundException $e) {
+            //@TODO: redirect to 404
+            echo "Route was not found";
+        } catch (\Exception $e) {
             //@TODO:
             echo "Smth went wrong...";
         }
