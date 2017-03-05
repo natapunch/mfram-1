@@ -35,10 +35,9 @@ class Application
     public function run()
     {
         $router = new Router($this->config['routes']);
-        $request = Request::getRequest();
 
         try {
-            $route = $router->getRoute($request);
+            $route = $router->getRoute(Request::getRequest());
 
             $route_controller = $route->getController();
             $route_method = $route->getMethod();

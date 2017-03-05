@@ -3,6 +3,8 @@
 namespace Mindk\Framework\Router;
 
 use Mindk\Framework\Request\Request;
+use Mindk\Framework\Router\Exception\InvalidRouteNameException;
+use Mindk\Framework\Router\Exception\RouteKeyNotPassedException;
 use Mindk\Framework\Router\Exception\RouteNotFoundException;
 
 /**
@@ -23,6 +25,7 @@ class Router
 
     /**
      * Router constructor.
+     * @param array $config
      */
     public function __construct(array $config)
     {
@@ -95,24 +98,22 @@ class Router
      * Returns regexp by config
      *
      * @param array $config_route
+     * @param array $existed_variables
      * @return string
      */
     private function getRegexpFromRoute(array $config_route, array $existed_variables): string
     {
-        $pattern = $config_route["pattern"];
-        $result = str_replace("/", "\/", $pattern);
+        $result = str_replace("/", "\/", $config_route["pattern"]);
 
-
-        $variables_names = $existed_variables;
-
-        for ($i = 0; $i < count($variables_names); $i++) {
+        $variables_configs = isset($config_route["variables"]) ? $config_route["variables"] : [];
+        for ($i = 0; $i < count($existed_variables); $i++) {
             $var_reg = "(" .
-                (array_key_exists($variables_names[$i], $config_route["variables"])
-                    ? $config_route["variables"][$variables_names[$i]]
+                (array_key_exists($existed_variables[$i], $variables_configs)
+                    ? $config_route["variables"][$existed_variables[$i]]
                     : self::DEFAULT_VAR_REGEXP
                 )
                 . ")";
-            $result = str_replace("{" . $variables_names[$i] . "}", $var_reg, $result);
+            $result = str_replace("{" . $existed_variables[$i] . "}", $var_reg, $result);
 
         }
 
@@ -155,23 +156,27 @@ class Router
     /**
      * Build link
      *
-     * @param $route_name
+     * @param string $route_name
      * @param array $params
-     *
      * @return string
+     * @throws InvalidRouteNameException if route name does not exist
+     * @throws RouteKeyNotPassedException if any key was not passed to params array
      */
-    public function getLink($route_name, $params = []): string
+    public function getLink(string $route_name, array $params = []): string
     {
-        $link = $this->routes[$route_name]['origin'];
+        if (array_key_exists($route_name, $this->routes)) {
+            preg_match_all("/\{([\w\d_]+)\}/", $link = $this->routes[$route_name]['origin'], $keys);
 
-        $replacements = '/\{[\w\d_]+\}/';
-        if (!empty($params) && preg_match($replacements, $link)) {
-            foreach ($params as $key => $value) {
-                $link = str_replace('{' . $key . '}', $value, $link);
+            foreach ($keys[1] as $key) {
+                if (!array_key_exists($key, $params)) {
+                    throw new RouteKeyNotPassedException("Key \"$key\" is required for route \"$route_name\"");
+                } else {
+                    $link = str_replace("{" . $key . "}", $params[$key], $link);
+                }
             }
+        } else {
+            throw new InvalidRouteNameException("Route with name \"$route_name\" was not found in config");
         }
-        // cleanup:
-        $link = preg_replace($replacements, '', $link);
 
         return $link;
     }
