@@ -7,18 +7,17 @@ use Mindk\Framework\Response\Response;
 
 class Controller
 {
-    public function render(string $view_path, array $params=[], bool $with_layout=true): Response
+    public function render(string $view_path, array $params = [], bool $with_layout = true): Response
     {
-        //get rendered info
         $content = Renderer::render($view_path, $params);
-        //return response
 
-        if($with_layout) {
-            //let layout placed into the same dir
-//            $content = Renderer::render()
+        //decided that layout.html.php placed in the same dir as view
+        if ($with_layout) {
+            $content = Renderer::render(
+                pathinfo($view_path)['dirname'] . DIRECTORY_SEPARATOR . 'layout.html.php',
+                ['content' => $content]);
         }
 
         return new Response($content);
-
     }
 }
