@@ -18,7 +18,8 @@ class Validator
         'min' => 'Mindk\Framework\Validation\Rules\MinValidationRule',
         'numeric' => 'Mindk\Framework\Validation\Rules\NumericValidationRule',
         'length_between' => 'Mindk\Framework\Validation\Rules\LengthBetweenValidationRule',
-        'not_start_from' => 'Mindk\Framework\Validation\Rules\NotStartFromValidationRule'
+        'not_start_from' => 'Mindk\Framework\Validation\Rules\NotStartFromValidationRule',
+        'required' => 'Mindk\Framework\Validation\Rules\RequiredRule'
     ];
 
     /**
@@ -64,7 +65,7 @@ class Validator
                 /** @var $validation_class AbstractValidationRule */
                 $validation_class = new self::$known_rules[$rule_key];
 
-                $field_value = $this->object->$field_name;
+                $field_value = isset($this->object->$field_name) ? $this->object->$field_name : null;
 
                 if (!$validation_class->check($field_name, $field_value, $rule_params)) {
                     $result = false;
