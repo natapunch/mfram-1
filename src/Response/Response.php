@@ -43,7 +43,7 @@ class Response
     {
         $this->setPayload($content);
         $this->code = $code;
-        $this->addHeader('Content-Type','text/html');
+        $this->addHeader('Content-Type', 'text/html');
     }
 
     /**
@@ -52,21 +52,24 @@ class Response
      * @param $key
      * @param $value
      */
-    public function addHeader($key, $value){
-       $this->headers[$key] = $value;
+    public function addHeader($key, $value)
+    {
+        $this->headers[$key] = $value;
     }
 
     /**
      * @param $content
      */
-    public function setPayload($content){
+    public function setPayload($content)
+    {
         $this->payload = $content;
     }
 
     /**
      * Send response
      */
-    public function send(){
+    public function send()
+    {
 
         $this->sendHeaders();
         $this->sendBody();
@@ -76,20 +79,23 @@ class Response
     /**
      * Send headers
      */
-    public function sendHeaders(){
-
-        header($_SERVER['SERVER_PROTOCOL'] . " " . $this->code . " " . self::STATUS_MSGS[$this->code]);
-        if(!empty($this->headers)){
-           foreach($this->headers as $key => $value){
-               header($key.": ". $value);
-           }
-       }
+    public function sendHeaders()
+    {
+        header($_SERVER['SERVER_PROTOCOL'] . " " . $this->code
+            . (array_key_exists($this->code, self::STATUS_MSGS) ? (" " . self::STATUS_MSGS[$this->code]) : "")
+        );
+        if (!empty($this->headers)) {
+            foreach ($this->headers as $key => $value) {
+                header($key . ": " . $value);
+            }
+        }
     }
 
     /**
      * Send response playload
      */
-    public function sendBody(){
+    public function sendBody()
+    {
         echo $this->payload;
     }
 }

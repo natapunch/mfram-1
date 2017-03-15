@@ -125,4 +125,14 @@ class Request
             return $filtered;
         }
     }
+
+    public function __get($name)
+    {
+        return isset($_REQUEST[$name]) ? $_REQUEST[$name] : null;
+    }
+
+    public function __isset($name)
+    {
+        return isset($_REQUEST[$name]);
+    }
 }
