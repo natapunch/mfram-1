@@ -34,14 +34,14 @@ class Response
     /**
      * @var string
      */
-    protected $playload = '';
+    protected $payload = '';
 
     /**
      * Response constructor.
      */
     public function __construct($content, $code = 200)
     {
-        $this->setPlayload($content);
+        $this->setPayload($content);
         $this->code = $code;
         $this->addHeader('Content-Type','text/html');
     }
@@ -59,8 +59,8 @@ class Response
     /**
      * @param $content
      */
-    public function setPlayload($content){
-        $this->playload = $content;
+    public function setPayload($content){
+        $this->payload = $content;
     }
 
     /**
@@ -90,6 +90,6 @@ class Response
      * Send response playload
      */
     public function sendBody(){
-        echo $this->playload;
+        echo $this->payload;
     }
 }
